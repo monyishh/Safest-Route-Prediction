@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <title>Safest Route Prediction</title>
+  <meta charset="utf-8" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
+  <style>
+    #map { height: 90vh; }
+  </style>
+</head>
+
+<body>
+<h2>Safest Route Prediction</h2>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+  const map = L.map("map").setView([17.3850, 78.4867], 13);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap"
+  }).addTo(map);
+
+  async function fetchRoutes() {
+    const response = await fetch("http://127.0.0.1:8000/predict-safe-route", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        source: { lat: 17.3850, lng: 78.4867 },
+        destination: { lat: 17.3900, lng: 78.4900 },
+        hour: 22
+      })
+    });
+
+    const data = await response.json();
+    drawRoutes(data);
+  }
+
+  function drawRoutes(data) {
+    Object.keys(data.routes).forEach(routeName => {
+      const routeCoords = data.routes[routeName];
+
+      L.polyline(routeCoords, {
+        color: routeName === data.safest_route ? "green" : "red",
+        weight: routeName === data.safest_route ? 6 : 3
+      })
+        .addTo(map)
+        .bindPopup(
+          `${routeName} | Safety Score: ${data.scores[routeName]}`
+        );
+    });
+  }
+
+  fetchRoutes();
+</script>
+
+</body>
+</html>
