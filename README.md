@@ -112,18 +112,20 @@ python -m venv .venv
 pip install -r backend/requirements.txt
 ```
 
-### 4️⃣ Run Backend Server
+### 4️⃣ Run Backend + Frontend Together
 
 ```bash
 cd backend
-uvicorn main:app --reload
+python -m uvicorn main:app --reload
 ```
 
-Backend will run at:
+Open the app in your browser at:
 
 ```
 http://127.0.0.1:8000
 ```
+
+The backend now serves the frontend automatically, so you do not need to open `frontend/index.html` separately.
 
 Swagger UI:
 
