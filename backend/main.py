@@ -5,9 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from osrm import get_routes
-from clustering import detect_hotspots
-from safety_score import route_safety_score
+from .osrm import get_routes
+from .clustering import detect_hotspots
+from .safety_score import route_safety_score
 
 app = FastAPI(title="Safest Route Prediction API")
 
@@ -23,7 +23,8 @@ frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
 app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
 
 # Load crime hotspots once at startup
-hotspots, _ = detect_hotspots("../data/crimes.csv")
+data_file = Path(__file__).resolve().parent.parent / "data" / "crimes.csv"
+hotspots, _ = detect_hotspots(str(data_file))
 
 
 @app.get("/")

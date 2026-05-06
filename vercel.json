@@ -13,6 +13,7 @@
   "routes": [
     {
       "src": "/predict-safe-route",
+      "methods": ["POST"],
       "dest": "backend/main.py"
     },
     {
